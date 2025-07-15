@@ -20,6 +20,11 @@ const jobSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+//debug URL
+app.get("/api/ping", (req, res) => {
+  res.send("pong");
+});
+
 
 // Auto-delete after 60 days
 jobSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 60 });

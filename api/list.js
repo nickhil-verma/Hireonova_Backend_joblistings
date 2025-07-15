@@ -1,4 +1,4 @@
-// api/jobs.js
+// api/list.js
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -33,13 +33,12 @@ async function connectDB() {
   }
 }
 
-
 /* --------------------------- ROUTES ------------------------------- */
-app.get("/ping", (req, res) => {
+app.get("/api/list/ping", (req, res) => {
   res.send("pong from vercel");
 });
 
-app.get("/jobs", async (req, res) => {
+app.get("/api/list/jobs", async (req, res) => {
   try {
     await connectDB();
     const page = parseInt(req.query.page) || 1;
@@ -64,7 +63,7 @@ app.get("/jobs", async (req, res) => {
   }
 });
 
-app.post("/jobs", async (req, res) => {
+app.post("/api/list/jobs", async (req, res) => {
   try {
     await connectDB();
 
@@ -91,7 +90,4 @@ app.post("/jobs", async (req, res) => {
 });
 
 /* ------------------------ EXPORT FOR VERCEL ----------------------- */
-module.exports = {
-  handler: serverless(app), // Vercel uses this
-  app                      // Local testing uses this
-};
+module.exports = serverless(app);

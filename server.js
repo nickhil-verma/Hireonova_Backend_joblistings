@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { app } = require("./api/list");
+const { app } = require("./api/jobs");
 const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 8080;

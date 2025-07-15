@@ -5,11 +5,9 @@ const serverless = require("serverless-http");
 
 const app = express();
 
-/* ---------------- Middleware ---------------- */
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "5mb" }));
 
-/* ---------------- Mongo Schema ---------------- */
 const jobSchema = new mongoose.Schema(
   {
     job_title: { type: String, required: true },
@@ -20,18 +18,12 @@ const jobSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-//debug URL
-app.get("/api/ping", (req, res) => {
-  res.send("pong");
-});
 
-
-// Auto-delete after 60 days
 jobSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 60 });
 
 const Job = mongoose.models.Job || mongoose.model("Job", jobSchema);
 
-/* ---------------- DB Connection Singleton ---------------- */
+// Connect to DB only once
 let isConnected = false;
 async function connectDB() {
   if (!isConnected) {
@@ -40,7 +32,11 @@ async function connectDB() {
   }
 }
 
-/* ---------------- Routes ---------------- */
+// Just for test
+app.get("/api/ping", (req, res) => {
+  res.send("pong from vercel");
+});
+
 app.get("/api/jobs", async (req, res) => {
   try {
     await connectDB();
@@ -92,8 +88,8 @@ app.post("/api/jobs", async (req, res) => {
   }
 });
 
-/* ---------------- Exports ---------------- */
+// Export both
 module.exports = {
-  handler: serverless(app), // for Vercel
-  app, // for local server.js
+  handler: serverless(app), // For Vercel
+  app,                      // For local use
 };

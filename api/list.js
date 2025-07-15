@@ -1,3 +1,4 @@
+// api/jobs.js
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -5,9 +6,11 @@ const serverless = require("serverless-http");
 
 const app = express();
 
+/* --------------------------- MIDDLEWARE --------------------------- */
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "5mb" }));
 
+/* ------------------------ MONGOOSE SETUP -------------------------- */
 const jobSchema = new mongoose.Schema(
   {
     job_title: { type: String, required: true },
@@ -20,10 +23,8 @@ const jobSchema = new mongoose.Schema(
 );
 
 jobSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 60 });
-
 const Job = mongoose.models.Job || mongoose.model("Job", jobSchema);
 
-// Connect to DB only once
 let isConnected = false;
 async function connectDB() {
   if (!isConnected) {
@@ -32,7 +33,7 @@ async function connectDB() {
   }
 }
 
-// Just for test
+/* --------------------------- ROUTES ------------------------------- */
 app.get("/api/ping", (req, res) => {
   res.send("pong from vercel");
 });
@@ -57,7 +58,7 @@ app.get("/api/jobs", async (req, res) => {
       pages: Math.ceil(total / limit),
     });
   } catch (err) {
-    console.error("GET error:", err);
+    console.error("GET /jobs error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -83,13 +84,13 @@ app.post("/api/jobs", async (req, res) => {
       skipped: payload.length - docsToInsert.length,
     });
   } catch (err) {
-    console.error("POST error:", err);
+    console.error("POST /jobs error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Export both
+/* ------------------------ EXPORT FOR VERCEL ----------------------- */
 module.exports = {
-  handler: serverless(app), // For Vercel
-  app,                      // For local use
+  handler: serverless(app), // Vercel uses this
+  app                      // Local testing uses this
 };

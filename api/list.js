@@ -34,11 +34,11 @@ async function connectDB() {
 }
 
 /* --------------------------- ROUTES ------------------------------- */
-app.get("/api/list/ping", (req, res) => {
+app.get("/ping", (req, res) => {
   res.send("pong from vercel");
 });
 
-app.get("/api/list/jobs", async (req, res) => {
+app.get("/jobs", async (req, res) => {
   try {
     await connectDB();
     const page = parseInt(req.query.page) || 1;
@@ -63,7 +63,7 @@ app.get("/api/list/jobs", async (req, res) => {
   }
 });
 
-app.post("/api/list/jobs", async (req, res) => {
+app.post("/jobs", async (req, res) => {
   try {
     await connectDB();
 

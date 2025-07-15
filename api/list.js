@@ -33,9 +33,6 @@ async function connectDB() {
   }
 }
 
-app.get("/", (req, res) => {
-  res.send("pong from vercel");
-});
 
 /* --------------------------- ROUTES ------------------------------- */
 app.get("/ping", (req, res) => {
